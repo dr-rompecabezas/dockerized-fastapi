@@ -2,6 +2,9 @@ from fastapi import FastAPI, Response, status, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from random import randrange
+import psycopg
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI()
 
@@ -10,13 +13,15 @@ class Post(BaseModel):
     title: str
     content: str
     published: bool = True
-    rating: Optional[int] = None
 
 
-my_posts = [
-    {"title": "Hello World", "content": "First post", "id": 1},
-    {"title": "Hello Mars", "content": "Second post", "id": 2}
-]
+with psycopg.connect() as conn:
+
+    print("Connected to database")
+
+    with conn.cursor() as cur:
+        cur.execute("SELECT * FROM posts")
+        my_posts = cur.fetchall()
 
 
 def find_post(id):
@@ -29,6 +34,7 @@ def find_post_index(id):
     for i, p in enumerate(my_posts):
         if p["id"] == id:
             return i
+
 
 @app.get("/")
 async def root():
@@ -57,7 +63,7 @@ def get_post(id: int):
     return {"data": post}
 
 
-@app.delete("/posts/{id}" , status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int):
     index = find_post_index(id)
     if not index:
@@ -75,4 +81,3 @@ def update_post(id: int, post: Post):
                             detail=f"Post with id {id} not found")
     my_posts[index] = post.dict()
     return {"data": my_posts[index]}
-
