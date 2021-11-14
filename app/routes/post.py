@@ -14,8 +14,8 @@ router = APIRouter(
 
 @router.get("/", response_model=List[schemas.Post])
 def get_posts(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    all_posts = db.query(models.Post).all()
-    return all_posts
+    posts = db.query(models.Post).all()
+    return posts
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
