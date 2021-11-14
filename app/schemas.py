@@ -4,6 +4,7 @@ from typing import Optional
 from pydantic.types import conint
 
 
+# User
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
@@ -17,12 +18,13 @@ class User(BaseModel):
     class Config:
         orm_mode = True
 
-
+# Login
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
 
+# Post
 class PostBase(BaseModel):
     title: str
     content: str
@@ -50,6 +52,16 @@ class PostList(PostBase):
         orm_mode = True
 
 
+class PostVotes(BaseModel):
+    # Extend BaseModel, not PostBase
+    Post: Post
+    votes: int
+
+    class Config:
+        orm_mode = True
+
+
+# Token
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -58,7 +70,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: Optional[str] = None
 
-
+# Vote
 class Vote(BaseModel):
     post_id: int
     dir: conint(le=1)
