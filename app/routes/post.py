@@ -14,7 +14,7 @@ router = APIRouter(
 
 @router.get("/", response_model=List[schemas.Post])
 def get_posts(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
-    all_posts = db.query(models.Post).filter(models.Post.owner_id == current_user.id).all()
+    all_posts = db.query(models.Post).all()
     return all_posts
 
 
@@ -32,9 +32,6 @@ def get_post(id: int, db: Session = Depends(get_db), current_user: dict = Depend
     post = db.query(models.Post).filter(models.Post.id == id).first()
     if post is None:
         raise HTTPException(status_code=404, detail="Post not found")
-    if post.owner_id != current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
     return post
 
 
