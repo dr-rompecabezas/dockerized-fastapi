@@ -1,7 +1,6 @@
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
-import psycopg
-from typing import List
+from sqlalchemy.exc import IntegrityError
 from .. import models, schemas, utils
 from ..database import get_db
 
@@ -14,14 +13,20 @@ router = APIRouter(
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
-    # hash the password - user.password
-    hashed_password = utils.hash_password(user.password)
-    user.password = hashed_password
+    try:
+        # hash the password - user.password
+        hashed_password = utils.hash_password(user.password)
+        user.password = hashed_password
 
-    new_user = models.User(**user.dict())
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+        new_user = models.User(**user.dict())
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+    except IntegrityError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User already exists",
+        )
     return new_user
 
 

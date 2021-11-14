@@ -1,13 +1,9 @@
 
-from fastapi import FastAPI, Response, status, HTTPException, Depends
+from fastapi import FastAPI
 import psycopg
-from sqlalchemy.orm import Session
-from .database import engine, get_db
-from . import models, schemas, utils
+from .database import engine
+from . import models
 from .routes import post, user, auth
-from dotenv import load_dotenv
-load_dotenv()
-
 
 models.Base.metadata.create_all(bind=engine)
 
