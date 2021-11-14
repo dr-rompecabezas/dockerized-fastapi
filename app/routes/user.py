@@ -13,12 +13,13 @@ router = APIRouter(
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-
+    """
+    Create a new user.
+    Hash the password.
+    """
     try:
-        # hash the password - user.password
         hashed_password = utils.hash_password(user.password)
         user.password = hashed_password
-
         new_user = models.User(**user.dict())
         db.add(new_user)
         db.commit()
@@ -33,6 +34,9 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @router.put("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.User)
 def update_user(id: int, user: schemas.UserCreate, db: Session = Depends(get_db)):
+    """
+    Update an existing user.
+    """
     user_query = db.query(models.User).filter(models.User.id == id)
     user_to_update = user_query.first()
     if user_to_update is None:
@@ -45,6 +49,9 @@ def update_user(id: int, user: schemas.UserCreate, db: Session = Depends(get_db)
 
 @router.get("/{id}", response_model=schemas.User)
 def get_user(id: int, db: Session = Depends(get_db)):
+    """
+    Get a user by id.
+    """
     user = db.query(models.User).filter(models.User.id == id).first()
     if user is None:
         raise HTTPException(
