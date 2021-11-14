@@ -17,9 +17,7 @@ router = APIRouter(
 def get_posts(db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user),
               limit: int = 10, skip: int = 0, search: Optional[str] = ""):
     """
-    Get all posts
-    Return posts with Post schema
-    Return results with PostOut schema
+    Get all posts with optional search, limit and skip parameters.
     """
     posts = db.query(models.Post).filter(
         models.Post.title.contains(search)).limit(limit).offset(skip).all()
@@ -31,7 +29,7 @@ def get_posts(db: Session = Depends(get_db), current_user: dict = Depends(oauth2
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
 def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
     """
-    Create a new post
+    Create a new post.
     """
     new_post = models.Post(owner_id=current_user.id, **post.dict())
     db.add(new_post)
@@ -43,7 +41,7 @@ def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db), curren
 @router.get("/{id}", response_model=schemas.Post)
 def get_post(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
     """
-    Get a post by id
+    Get a post by id.
     """
     post = db.query(models.Post).filter(models.Post.id == id).first()
     if post is None:
@@ -54,7 +52,7 @@ def get_post(id: int, db: Session = Depends(get_db), current_user: dict = Depend
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
     """
-    Delete a post by id
+    Delete a post by id.
     """
     post_query = db.query(models.Post).filter(models.Post.id == id)
     post = post_query.first()
@@ -72,7 +70,7 @@ def delete_post(id: int, db: Session = Depends(get_db), current_user: dict = Dep
 @router.put("/{id}", status_code=status.HTTP_200_OK, response_model=schemas.Post)
 def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(get_db), current_user: dict = Depends(oauth2.get_current_user)):
     """
-    Update a post by id
+    Update a post by id.
     """
     post_query = db.query(models.Post).filter(models.Post.id == id)
     post_to_update = post_query.first()

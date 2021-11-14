@@ -14,7 +14,7 @@ router = APIRouter(
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def vote(vote: schemas.Vote, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_user)):
     """
-    Create a new vote
+    Create a new vote.
     """
     post = db.query(models.Post).filter(models.Post.id == vote.post_id).first()
     if not post:
