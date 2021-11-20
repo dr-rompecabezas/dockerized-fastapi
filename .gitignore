@@ -2,3 +2,4 @@ __pycache__
 venv/
 .env
 ubuntu.notes.txt
+.pytest_cache
