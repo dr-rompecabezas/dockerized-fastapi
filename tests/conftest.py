@@ -19,6 +19,9 @@ TestingSessionLocal = sessionmaker(
 
 @pytest.fixture()
 def session():
+    """
+    Create a session for interacting with the database.
+    """
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = TestingSessionLocal()
@@ -30,6 +33,9 @@ def session():
 
 @pytest.fixture()
 def client(session):
+    """
+    Create a test client for interacting with the API.
+    """
     def override_get_db():
         try:
             yield session
@@ -41,6 +47,9 @@ def client(session):
 
 @pytest.fixture
 def test_user(client):
+    """
+    Create a test user.
+    """
     user_data = {
         "email": "test_user@gmail.com",
         "password": "abc123"
@@ -59,6 +68,9 @@ def token(test_user):
 
 @pytest.fixture
 def authorized_client(client, token):
+    """
+    Create a test client with an authorized token.
+    """
     client.headers = {
         **client.headers,
         "Authorization": f"Bearer {token}"
@@ -68,6 +80,9 @@ def authorized_client(client, token):
 
 @pytest.fixture
 def test_posts(test_user, session):
+    """
+    Create multiple test posts.
+    """
     posts_data = [{
         "title": "First Post",
         "content": "This is the first test post",
@@ -82,14 +97,13 @@ def test_posts(test_user, session):
         "owner_id": test_user['id']
     }]
 
-    def create_post_model(post):
+    def _create_post_model(post):
         return models.Post(**post)
 
-    post_map = map(create_post_model, posts_data)
+    post_map = map(_create_post_model, posts_data)
     posts_list = list(post_map)
 
     session.add_all(posts_list)
     session.commit()
     posts = session.query(models.Post).all()
     return posts
-
