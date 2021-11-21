@@ -1,4 +1,5 @@
 from jose import jwt
+from sqlalchemy.util.langhelpers import public_factory
 from app import schemas
 from app.config import settings
 
@@ -73,7 +74,8 @@ def test_create_post(authorized_client):
     """
     post_data = {
         "title": "Test Post",
-        "content": "Test Content"
+        "content": "Test Content",
+        "published": True
     }
     response = authorized_client.post("/posts/", json=post_data)
     post = schemas.Post(**response.json())
@@ -84,6 +86,7 @@ def test_create_post(authorized_client):
     assert post.title == post_data['title']
     assert post.content == post_data['content']
     assert post.owner_id is not None
+    assert post.published is True
 
 
 def test_unathorized_create_post(client):
@@ -93,7 +96,8 @@ def test_unathorized_create_post(client):
     """
     post_data = {
         "title": "Test Post",
-        "content": "Test Content"
+        "content": "Test Content",
+        "published": True
     }
     response = client.post("/posts/", json=post_data)
 
@@ -143,7 +147,8 @@ def test_update_post(authorized_client, test_posts):
     """
     post_data = {
         "title": "Test Post",
-        "content": "Test Content"
+        "content": "Test Content",
+        "published": False
     }
     response = authorized_client.put(
         f"/posts/{test_posts[0].id}", json=post_data)
@@ -154,6 +159,8 @@ def test_update_post(authorized_client, test_posts):
     assert response.json()['content'] == post_data['content']
     assert post.title == post_data['title']
     assert post.content == post_data['content']
+    assert post.owner_id is not None
+    assert post.published is False
 
 
 def test_unathorized_update_post(client, test_posts):
