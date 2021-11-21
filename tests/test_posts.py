@@ -68,7 +68,7 @@ def test_get_post_by_id_not_found(authorized_client, test_posts):
     assert response.json() == {'detail': 'Post not found'}
 
 
-def test_create_post(authorized_client):
+def test_create_post(authorized_client, test_user, test_posts):
     """
     Test that we can create a post.
     """
@@ -85,7 +85,7 @@ def test_create_post(authorized_client):
     assert response.json()['content'] == post_data['content']
     assert post.title == post_data['title']
     assert post.content == post_data['content']
-    assert post.owner_id is not None
+    assert post.owner_id == test_user['id']
     assert post.published is True
 
 
@@ -141,7 +141,7 @@ def test_create_post_missing_title_content(authorized_client):
     assert response.json()['detail'][0]['msg'] == "field required"
 
 
-def test_update_post(authorized_client, test_posts):
+def test_update_post(authorized_client, test_user, test_posts):
     """
     Test that we can update a post.
     """
@@ -159,7 +159,7 @@ def test_update_post(authorized_client, test_posts):
     assert response.json()['content'] == post_data['content']
     assert post.title == post_data['title']
     assert post.content == post_data['content']
-    assert post.owner_id is not None
+    assert post.owner_id == test_user['id']
     assert post.published is False
 
 
