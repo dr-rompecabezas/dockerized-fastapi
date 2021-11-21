@@ -2,7 +2,7 @@ name: GitHub Actions Build and Deploy
 
 on: [push, pull_request]
 
-  jobs:
+jobs:
   job1:
     env:
       DATABASE_HOSTNAME: localhost
