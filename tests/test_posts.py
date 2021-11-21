@@ -208,24 +208,3 @@ def test_delete_post_not_found(authorized_client, test_posts):
     assert response.json() == {'detail': 'Post not found'}
 
 
-def test_vote_post(authorized_client, test_posts):
-    """
-    Test that we can vote on a post.
-    """
-    response = authorized_client.post(
-        "/vote/", json={"post_id": test_posts[0].id, "dir": 1})  # upvote
-
-    assert response.status_code == 201
-    assert response.json()['message'] == "Succesfully added vote"
-
-
-def test_unathorized_vote_post(client, test_posts):
-    """
-    Test that we cannot vote on a post without authorization.
-    Use regular client, not authorized client.
-    """
-    response = client.post(
-        "/vote/", json={"post_id": test_posts[0].id, "dir": 1})  # upvote
-
-    assert response.status_code == 401
-    assert response.json() == {'detail': 'Not authenticated'}
