@@ -3,7 +3,3 @@ venv/
 .env
 .pytest_cache
 Documentation
-Procfile
-Dockerfile
-docker-compose-dev.yml
-docker-compose-prod.yml
