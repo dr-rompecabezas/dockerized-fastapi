@@ -28,4 +28,4 @@ app.include_router(vote.router)
 
 @app.get("/")
 def root():
-    return {"message": "Hello, Milky Way"}
+    return {"message": "What we've got here is a failure to communicate."}
