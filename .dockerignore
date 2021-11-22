@@ -5,3 +5,4 @@ ubuntu.notes.txt
 .pytest_cache
 gunicorn.service
 nginx
+Procfile
