@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     environment:
-      name: testing
+      name: run tests
     env:
       DATABASE_HOSTNAME: ${{secrets.DATABASE_HOSTNAME}}
       DATABASE_PORT: ${{secrets.DATABASE_PORT}}
@@ -20,7 +20,7 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+          POSTGRES_PASSWORD: postgres
           POSTGRES_DB: ${{secrets.POSTGRES_DB}}_test
         ports:
           - 5432:5432
