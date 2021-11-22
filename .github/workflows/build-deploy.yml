@@ -14,14 +14,14 @@ jobs:
       DATABASE_USERNAME: ${{secrets.DATABASE_USERNAME}}
       SECRET_KEY: ${{secrets.SECRET_KEY}}
       ALGORITHM: ${{secrets.ALGORITHM}}
-      ACCESS_TOKEN_EXPIRE_MINUTES: 60
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${{ACCESS_TOKEN_EXPIRE_MINUTES}}
 
     services:
       postgres:
         image: postgres
         env:
-          POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
-          POSTGRES_DB: ${{secrets.DATABASE_NAME}}_test
+          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+          POSTGRES_DB: ${{secrets.POSTGRES_DB}}_test
         ports:
           - 5432:5432
         options: >-
