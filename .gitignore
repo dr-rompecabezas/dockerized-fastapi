@@ -1,8 +1,9 @@
 __pycache__
 venv/
 .env
-ubuntu.notes.txt
 .pytest_cache
-gunicorn.service
-nginx
+Documentation
 Procfile
+Dockerfile
+docker-compose-dev.yml
+docker-compose-prod.yml
