@@ -80,11 +80,11 @@ jobs:
   
   # Deploy job: continuous delivery
   deploy:
-    # Runs on a new machine
     runs-on: ubuntu-latest
-    # Create dependency to prevent default github method of running jobs in parallel
     needs: [build]
-
+    environment:
+      name: production
+    
     steps:
       - name: Check out repo
         uses: actions/checkout@v2
@@ -93,6 +93,6 @@ jobs:
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "fastapi-social-posts-app"
-          heroku_email: "felavid@gmail.com"
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
 
