@@ -6,7 +6,7 @@ jobs:
   # Build job: continuous integration, including testing and docker
   build:
     environment:
-      name: fastapi
+      name: testing
     env:
       DATABASE_HOSTNAME: ${{ secrets.DATABASE_HOSTNAME }}
       DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
@@ -71,7 +71,7 @@ jobs:
           file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags:  ${{ secrets.DOCKER_HUB_USERNAME }}/fastapi:latest
+          tags:  ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_TAGS }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
@@ -92,17 +92,17 @@ jobs:
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
 
       - name: Deploy to Digital Ocean
         uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.SSH_HOST}}
-          username: ${{secrets.SSH_USERNAME}}
-          password: ${{secrets.SSH_PASSWORD}}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd app/src
             git pull
-            echo ${{secrets.SSH_PASSWORD}} | sudo -S systemctl restart api
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S systemctl restart api
